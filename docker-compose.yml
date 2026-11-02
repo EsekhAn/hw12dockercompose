@@ -4,7 +4,7 @@ services:
     container_name: app42-db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: rootpasswor
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: app42db
       MYSQL_USER: app42user
       MYSQL_PASSWORD: app42password
@@ -12,11 +12,13 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
       interval: 10s
       timeout: 5s
       retries: 5
+
   app:
     build: .
     container_name: app42-app
@@ -26,5 +28,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./Config.properties:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/Config.properties
+
 volumes:
   db_data:

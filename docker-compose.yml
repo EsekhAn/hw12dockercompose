@@ -10,6 +10,8 @@ services:
       MYSQL_PASSWORD: app42password
     ports:
       - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
     command: --default-authentication-plugin=mysql_native_password
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
@@ -26,8 +28,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    volumes:
-      - ./Config.properties:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/Config.properties
 
 volumes:
   db_data:
